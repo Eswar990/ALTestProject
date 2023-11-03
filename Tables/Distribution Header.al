@@ -1,8 +1,8 @@
 table 50100 "Distribution Header"
 {
     Caption = 'Distribution Header';
-    // DrillDownPageId = "Reference Data List";
-    // LookupPageId = "Reference Data List";
+    DrillDownPageId = "Reference Data List";
+    LookupPageId = "Reference Data List";
     DataClassification = CustomerContent;
 
     fields
@@ -12,19 +12,19 @@ table 50100 "Distribution Header"
         }
         field(2; year; Code[20])
         {
-            TableRelation = "Reference Data".Code;
+            TableRelation = "Reference Data".Code where(Code = field(Year), "Sorting Value" = filter(= ''));
         }
         field(3; Month; Code[20])
         {
-            TableRelation = "Reference Data".Code;
+            TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
         }
         field(4; "Previous Year"; Code[20])
         {
-            TableRelation = "Reference Data".Code;
+            TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
         }
         field(5; "Previous Month"; Code[20])
         {
-            TableRelation = "Reference Data".Code;
+            TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
         }
 
     }
@@ -49,4 +49,9 @@ table 50100 "Distribution Header"
         Soo: page "Sales Order";
         sop: Page "Sales Order Subform";
         Customer: Record Customer;
+        Dimensions: Record Dimension;
+        Dimensionsvalue: Record "Dimension Value";
+        DimensionPage: page "Dimension Values";
+        GLEntry: Record "G/L Entry";
+        GLEntryPAGE: Page "General Ledger Entries";
 }

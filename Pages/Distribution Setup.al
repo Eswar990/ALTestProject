@@ -53,9 +53,19 @@ page 50100 "Distribution Setup"
     {
         area(Processing)
         {
-            action(ActionName)
+            action("Cpoy From pre. Deltails")
             {
-                ApplicationArea = All;
+                Image = Copy;
+
+                trigger OnAction()
+                begin
+
+                end;
+            }
+
+            action("Update Emp. Deltails")
+            {
+                image = UpdateDescription;
 
                 trigger OnAction()
                 begin

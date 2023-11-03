@@ -3,6 +3,7 @@ page 50102 "Distribution Subform"
     ApplicationArea = All;
     Caption = 'Distribution Subform';
     PageType = ListPart;
+    RefreshOnActivate = true;
     SourceTable = "Distribution Line";
 
     layout

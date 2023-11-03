@@ -1,8 +1,8 @@
 table 50101 "Reference Data"
 {
     Caption = 'Reference Data';
-    // DrillDownPageID = "Reference Data List";
-    // LookupPageID = "Reference Data List";
+    DrillDownPageID = "Reference Data List";
+    LookupPageID = "Reference Data List";
     DataClassification = CustomerContent;
 
     fields

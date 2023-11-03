@@ -4,6 +4,7 @@ page 50101 "Reference Data List"
     Caption = 'Reference Data List';
     PageType = List;
     SourceTable = "Reference Data";
+    RefreshOnActivate = true;
     UsageCategory = Lists;
 
     layout
