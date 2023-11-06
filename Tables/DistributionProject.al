@@ -1,7 +1,7 @@
 table 50104 "Distribution Project"
 {
     Caption = 'Distribution Project';
-    DataClassification = ToBeClassified;
+    DataClassification = CustomerContent;
 
     fields
     {
@@ -11,31 +11,31 @@ table 50104 "Distribution Project"
         }
         field(2; "Shortcut Dimension 3 Code"; Code[20])
         {
-            Caption = '';
+            Caption = 'Project';
         }
         field(3; "Project Amount"; Decimal)
         {
-            Caption = '';
+            Caption = 'Project Amount';
         }
         field(4; "Project Line"; Boolean)
         {
-            Caption = '';
+            Caption = 'Project Line';
         }
         field(5; "Line No."; Integer)
         {
-            Caption = '';
+            Caption = 'Line No.';
         }
         field(6; "Shortcut Dimension 2 Code"; Code[20])
         {
-            Caption = '';
+            Caption = 'Branch Code';
         }
         field(7; "Emp.Count"; Integer)
         {
-            Caption = '';
+            Caption = 'Emp.Count';
         }
         field(8; "G/L Account No."; Code[20])
         {
-
+            Caption = 'G/L Account No.';
         }
     }
     keys

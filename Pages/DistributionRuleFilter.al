@@ -4,11 +4,13 @@ page 50104 "Distribution Rule Filter"
     Caption = 'Distribution Rule Filter';
     PageType = Card;
     SourceTable = "Distribution Rule Filter";
+    UsageCategory = Administration;
 
     layout
     {
         area(content)
         {
+
             group(General)
             {
                 Caption = 'General';
@@ -27,6 +29,10 @@ page 50104 "Distribution Rule Filter"
                 field("Dimension Value"; Rec."Dimension Value")
                 {
                 }
+            }
+            group("Branch Distribution")
+            {
+                Caption = 'Branch Distribution';
                 field("Dimension Value One"; Rec."Dimension Value One")
                 {
                 }
@@ -58,10 +64,21 @@ page 50104 "Distribution Rule Filter"
                 {
                 }
             }
-            group("Branch Distribution")
+            part(DistributionProject; "Distribution Project")
             {
-                Caption = 'Branch Distribution';
-
+                Caption = 'Prject Line';
+                Editable = true;
+                Enabled = true;
+                UpdatePropagation = Both;
+                SubPageLink = "Entry No." = field("Entry No.");
+            }
+            part(DistributionRule; "Distribution Rule")
+            {
+                Caption = 'Lines';
+                Editable = true;
+                Enabled = true;
+                UpdatePropagation = Both;
+                SubPageLink = "Entry No." = field("Entry No.");
             }
         }
     }

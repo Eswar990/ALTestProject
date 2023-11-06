@@ -20,28 +20,27 @@ table 50102 "Distribution Line"
         field(3; "Shortcut Dimension 1 Code"; Code[20])
         {
             Caption = 'Employe Code';
-            // TableRelation = "Dimension Value".Code where();
-            TableRelation = Dimension.Code; // where(Code = field("Shortcut Dimension 1 Code"));
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(3));
         }
         field(4; "Shortcut Dimension 2 Code"; Code[20])
         {
             Caption = 'Branch Code';
-            TableRelation = "Dimension Value".Code;
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(4));
         }
         field(5; "Shortcut Dimension 3 Code"; Code[20])
         {
             Caption = 'Project One';
-            TableRelation = "Dimension Value".Code;
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(5));
         }
         field(6; "Shortcut Dimension 3 Two"; Code[20])
         {
             Caption = 'Project Two';
-            TableRelation = "Dimension Value".Code;
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(5));
         }
         field(7; "Shortcut Dimension 3 Three"; Code[20])
         {
             Caption = 'Project Thee';
-            TableRelation = "Dimension Value".Code;
+            TableRelation = "Dimension Value".Code where("Global Dimension No." = const(5));
         }
         field(8; "Percentage One"; Decimal)
         {

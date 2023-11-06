@@ -82,4 +82,8 @@ page 50103 "Distribution Entries"
             }
         }
     }
+    trigger OnAfterGetCurrRecord()
+    begin
+
+    end;
 }

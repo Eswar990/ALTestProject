@@ -26,7 +26,6 @@ table 50100 "Distribution Header"
         {
             TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
         }
-
     }
 
     keys
@@ -47,6 +46,7 @@ table 50100 "Distribution Header"
         so: Record "Sales Line";
         So1: Record "Sales Header";
         Soo: page "Sales Order";
+        SalesIn: Page "Sales Invoice";
         sop: Page "Sales Order Subform";
         Customer: Record Customer;
         Dimensions: Record Dimension;
