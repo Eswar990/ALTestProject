@@ -35,6 +35,12 @@ page 50100 "Distribution Setup"
                     field("Month"; Rec.Month)
                     {
                         Caption = 'Month';
+                        trigger OnValidate()
+                        var
+                        begin
+                            if (Rec.Month <> '') then
+                                CurrPage.DistributionLine.Page.Update();
+                        end;
                     }
                 }
             }
@@ -77,4 +83,5 @@ page 50100 "Distribution Setup"
 
     var
         Sales: Page "Sales Order";
+        DistributionSubform: Page "Distribution Subform";
 }

@@ -54,4 +54,7 @@ table 50100 "Distribution Header"
         DimensionPage: page "Dimension Values";
         GLEntry: Record "G/L Entry";
         GLEntryPAGE: Page "General Ledger Entries";
+        GlAcc: Record "G/L Account";
+        Chartofaccount: Page "Chart of Accounts";
+        SalesOrderStatistics: Page "Sales Order Statistics";
 }

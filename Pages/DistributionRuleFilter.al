@@ -1,10 +1,12 @@
 page 50104 "Distribution Rule Filter"
 {
-    ApplicationArea = All;
     Caption = 'Distribution Rule Filter';
+    DeleteAllowed = false;
+    InsertAllowed = false;
+    LinksAllowed = false;
     PageType = Card;
     SourceTable = "Distribution Rule Filter";
-    UsageCategory = Administration;
+    ApplicationArea = All;
 
     layout
     {

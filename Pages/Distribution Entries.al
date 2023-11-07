@@ -77,7 +77,7 @@ page 50103 "Distribution Entries"
 
                 trigger OnAction()
                 begin
-
+                    Page.Run(Page::"Distribution Rule Filter");
                 end;
             }
         }

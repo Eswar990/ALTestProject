@@ -47,5 +47,11 @@ page 50102 "Distribution Subform"
 
         }
     }
+    // local procedure UpdateDistributionLines()
+    // var
+    //     myInt: Integer;
+    // begin
+    //     CurrPage.Update();
+    // end;
 }
 

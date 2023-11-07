@@ -1,7 +1,7 @@
 table 50103 "Distribution Rule Filter"
 {
-    Caption = 'Distribution Rule Filter';
-    DataClassification = CustomerContent;
+    // Caption = 'Distribution Rule Filter';
+    DataClassification = ToBeClassified;
 
     fields
     {

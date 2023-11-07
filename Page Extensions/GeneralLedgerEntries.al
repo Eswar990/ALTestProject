@@ -16,5 +16,12 @@ pageextension 50102 GeneralLedgerEntries extends "General Ledger Entries"
 
             }
         }
+        addafter(Amount)
+        {
+            field("Account Category"; Rec."Account Category")
+            {
+
+            }
+        }
     }
 }
