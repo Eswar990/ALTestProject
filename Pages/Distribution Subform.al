@@ -4,6 +4,7 @@ page 50102 "Distribution Subform"
     Caption = 'Distribution Subform';
     PageType = ListPart;
     RefreshOnActivate = true;
+    UsageCategory = Administration;
     SourceTable = "Distribution Line";
 
     layout
@@ -47,11 +48,11 @@ page 50102 "Distribution Subform"
 
         }
     }
-    // local procedure UpdateDistributionLines()
-    // var
-    //     myInt: Integer;
-    // begin
-    //     CurrPage.Update();
-    // end;
+    trigger OnClosePage()
+    var
+        DeleteDistributionData: Codeunit DeleteDistributionData;
+    begin
+        DeleteDistributionData.DeleteData();
+    end;
 }
 

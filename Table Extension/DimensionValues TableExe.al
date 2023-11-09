@@ -5,10 +5,12 @@ tableextension 50102 "DimensionValues TableExe" extends "Dimension Value"
         field(50100; "Year"; Code[20])
         {
             Caption = 'Year';
+            TableRelation = "Reference Data".Code where(Code = field(Year), "Sorting Value" = filter(= ''));
         }
         field(50101; "Month"; Code[20])
         {
             Caption = 'Month';
+            TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
         }
         field(50103; "Shortcut Dimension 2 Code"; Code[20])
         {

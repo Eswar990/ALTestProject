@@ -18,20 +18,8 @@ tableextension 50101 "Distribution GLEntry" extends "G/L Entry"
         {
             BlankZero = true;
             Caption = 'Account Category';
-            // trigger OnValidate()
-            // begin
-            //     if "Account Category" = "Account Category"::" " then
-            //         exit;
-
-            //     if "Account Category" in ["Account Category"::Income, "Account Category"::"Cost of Goods Sold", "Account Category"::Expense] then
-            //         "Income/Balance" := "Income/Balance"::"Income Statement"
-            //     else
-            //         "Income/Balance" := "Income/Balance"::"Balance Sheet";
-            //     if "Account Category" <> xRec."Account Category" then
-            //         "Account Subcategory Entry No." := 0;
-
-            //     UpdateAccountCategoryOfSubAccounts();
-            // end;
+            FieldClass = FlowField;
+            CalcFormula = Lookup("G/L Account"."Account Category" where("No." = field("G/L Account No.")));
         }
     }
 }
