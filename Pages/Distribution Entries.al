@@ -74,16 +74,44 @@ page 50103 "Distribution Entries"
             action("Distribution Rule")
             {
                 Image = Allocate;
-
+                // RunObject = page "Distribution Rule Filter";
+                // RunPageLink = "Entry No." = field("Entry No.");
                 trigger OnAction()
+                var
+                    GLEntry: Record "G/L Entry";
+                    DistributionRuleFilter: Record "Distribution Rule Filter";
+                    AccountCategoryinsertedGLentry: Codeunit AccountCategoryinsertedGLentry;
                 begin
-                    Page.Run(Page::"Distribution Rule Filter");
+                    CurrPage.SetSelectionFilter(GLEntry);
+                    DistributionRuleFilter.SetRange("Entry No.", Rec."Entry No.");
+
+                    if (DistributionRuleFilter.FindFirst() = false) then begin
+                        DistributionRuleFilter.Init();
+                        DistributionRuleFilter."Entry No." := Rec."Entry No.";
+                        DistributionRuleFilter."Distribution Method" := DistributionRuleFilter."Distribution Method"::maually;
+                        if ((Rec."Credit Amount" = 0) and (Rec."Debit Amount" = 0)) then begin
+                            DistributionRuleFilter."Distribution Amount" := Rec.Amount
+                        end else begin
+                            if (Rec."Credit Amount" = 0) then begin
+                                DistributionRuleFilter."Distribution Amount" := Rec."Debit Amount";
+                            end else begin
+                                DistributionRuleFilter."Distribution Amount" := Rec."Credit Amount";
+                            end;
+                        end;
+                        DistributionRuleFilter.Insert(true);
+                    end;
+                    Page.Run(Page::"Distribution Rule Filter", DistributionRuleFilter);
                 end;
             }
         }
     }
-    trigger OnAfterGetCurrRecord()
-    begin
 
-    end;
+    var
+        AccountCategoryinsertedGLentry: Codeunit AccountCategoryinsertedGLentry;
+        Distribution: Record "Distribution Rule Filter";
+        Distributions: Page "Distribution Rule Filter";
+        generalledgerenr: Page "General Ledger Entries";
+        GLEntry: Record "G/L Entry";
+        TooManyGLEntriesSelectedErr: Label 'You have selected too many G/L entries. Split the change to select fewer entries, or go to the Dimension Correction page and use filters to select the entries.';
+
 }

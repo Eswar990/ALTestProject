@@ -11,7 +11,8 @@ table 50103 "Distribution Rule Filter"
         }
         field(2; "Dimension Filter"; Code[20])
         {
-            Caption = 'Dimension Filter';
+            Caption = 'Dimension';
+            TableRelation = Dimension.Code where(Code = field("Dimension Filter"));
         }
         field(3; "Dimension Value"; Code[20])
         {
@@ -20,7 +21,8 @@ table 50103 "Distribution Rule Filter"
         field(4; "Distribution Method"; Option)
         {
             Caption = 'Distribution Method';
-            OptionMembers = ,Equally,propotion,,maually;
+            OptionCaption = ' ,Equally,propotion,maually';
+            OptionMembers = Equally,propotion,maually;
         }
         field(5; "Negative Allocation"; Boolean)
         {
@@ -32,7 +34,7 @@ table 50103 "Distribution Rule Filter"
         }
         field(7; "G/L Amount"; Decimal)
         {
-            Caption = 'G?L Amount';
+            Caption = 'G/L Amount';
         }
         field(8; "Distribution Amount"; Decimal)
         {

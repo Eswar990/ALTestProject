@@ -52,7 +52,7 @@ page 50102 "Distribution Subform"
     var
         DeleteDistributionData: Codeunit DeleteDistributionData;
     begin
-        DeleteDistributionData.DeleteData();
+        DeleteDistributionData.DeleteDistributionLineData();
     end;
 }
 

@@ -24,4 +24,7 @@ pageextension 50102 GeneralLedgerEntries extends "General Ledger Entries"
             }
         }
     }
+
+    var
+        DistributionRuleFilter: Record "Distribution Rule Filter";
 }

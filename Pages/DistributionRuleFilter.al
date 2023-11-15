@@ -1,9 +1,10 @@
 page 50104 "Distribution Rule Filter"
 {
     Caption = 'Distribution Rule Filter';
-    DeleteAllowed = false;
-    InsertAllowed = false;
-    LinksAllowed = false;
+    // DeleteAllowed = false;
+    // InsertAllowed = false;
+    // LinksAllowed = false;
+    Editable = true;
     PageType = Card;
     SourceTable = "Distribution Rule Filter";
     ApplicationArea = All;
@@ -18,18 +19,22 @@ page 50104 "Distribution Rule Filter"
                 Caption = 'General';
                 field("Entry No."; Rec."Entry No.")
                 {
-                }
-                field("Distribution Method"; Rec."Distribution Method")
-                {
+                    Editable = false;
                 }
                 field("Dimension Filter"; Rec."Dimension Filter")
                 {
                 }
-                field("Distribution Amount"; Rec."Distribution Amount")
-                {
-                }
                 field("Dimension Value"; Rec."Dimension Value")
                 {
+                    Editable = false;
+                }
+                field("Distribution Method"; Rec."Distribution Method")
+                {
+                    Editable = false;
+                }
+                field("Distribution Amount"; Rec."Distribution Amount")
+                {
+                    Editable = false;
                 }
             }
             group("Branch Distribution")

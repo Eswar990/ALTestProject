@@ -22,4 +22,20 @@ tableextension 50101 "Distribution GLEntry" extends "G/L Entry"
             CalcFormula = Lookup("G/L Account"."Account Category" where("No." = field("G/L Account No.")));
         }
     }
+    procedure DistributionNoApplied()
+    begin
+        DuplicateNumber1 := Rec."Entry No.";
+        if (Duplicatenumber2 = Iterator) then begin
+            Duplicatenumber2 := DuplicateNumber1;
+            Iterator := (Iterator + 1);
+            Commit();
+        end;
+        Rec."Dist. Entry No Applied" := Duplicatenumber2;
+    end;
+
+    var
+        Iterator: Integer;
+        DuplicateNumber1: Integer;
+        Duplicatenumber2: Integer;
+        DistributionRuleFilter: Record "Distribution Rule Filter";
 }

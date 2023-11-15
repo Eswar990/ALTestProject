@@ -113,6 +113,13 @@ page 50100 "Distribution Setup"
         end;
     end;
 
+    trigger OnClosePage()
+    var
+        DeleteDistributionData: Codeunit DeleteDistributionData;
+    begin
+        DeleteDistributionData.DeleteDistributionHeaderData();
+    end;
+
     var
         Sales: Page "Sales Order";
         DistributionSubform: Page "Distribution Subform";
