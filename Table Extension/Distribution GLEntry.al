@@ -33,6 +33,11 @@ tableextension 50101 "Distribution GLEntry" extends "G/L Entry"
         Rec."Dist. Entry No Applied" := Duplicatenumber2;
     end;
 
+    trigger OnBeforeInsert()
+    begin
+        DistributionNoApplied();
+    end;
+
     var
         Iterator: Integer;
         DuplicateNumber1: Integer;

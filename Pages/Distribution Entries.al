@@ -74,8 +74,6 @@ page 50103 "Distribution Entries"
             action("Distribution Rule")
             {
                 Image = Allocate;
-                // RunObject = page "Distribution Rule Filter";
-                // RunPageLink = "Entry No." = field("Entry No.");
                 trigger OnAction()
                 var
                     GLEntry: Record "G/L Entry";
@@ -89,14 +87,10 @@ page 50103 "Distribution Entries"
                         DistributionRuleFilter.Init();
                         DistributionRuleFilter."Entry No." := Rec."Entry No.";
                         DistributionRuleFilter."Distribution Method" := DistributionRuleFilter."Distribution Method"::maually;
-                        if ((Rec."Credit Amount" = 0) and (Rec."Debit Amount" = 0)) then begin
-                            DistributionRuleFilter."Distribution Amount" := Rec.Amount
+                        if (Rec."Credit Amount" = 0) then begin
+                            DistributionRuleFilter."Distribution Amount" := Rec."Debit Amount";
                         end else begin
-                            if (Rec."Credit Amount" = 0) then begin
-                                DistributionRuleFilter."Distribution Amount" := Rec."Debit Amount";
-                            end else begin
-                                DistributionRuleFilter."Distribution Amount" := Rec."Credit Amount";
-                            end;
+                            DistributionRuleFilter."Distribution Amount" := Rec."Credit Amount";
                         end;
                         DistributionRuleFilter.Insert(true);
                     end;
@@ -105,6 +99,25 @@ page 50103 "Distribution Entries"
             }
         }
     }
+
+    trigger OnOpenPage()
+    begin
+        // Rec.FilterGroup(11);
+        // Rec.SetFilter("Document No.", '1*');
+        // Rec.FilterGroup(12);
+        // Rec.SetFilter("Document No.", '*7*');
+        // rec.FilterGroup(0);
+        Rec.FilterGroup(-1);
+        Rec.SetRange("Entry No.", 250, 290);
+        Rec.SetRange("Document Type", Rec."Document Type"::Payment);
+        if (Rec.FindSet() = true) then begin
+            repeat
+                Rec.Mark(true);
+            until Rec.Next() = 0
+        end;
+        Rec.MarkedOnly(true);
+        // Rec.FilterGroup(0);
+    end;
 
     var
         AccountCategoryinsertedGLentry: Codeunit AccountCategoryinsertedGLentry;

@@ -1,9 +1,9 @@
 page 50100 "Distribution Setup"
 {
-    PageType = Card;
+    PageType = Document;
     ApplicationArea = All;
-    RefreshOnActivate = false;
-    UsageCategory = Administration;
+    RefreshOnActivate = true;
+    // UsageCategory = Administration;
     Caption = 'Distribution Setup';
     SourceTable = "Distribution Header";
 
@@ -19,10 +19,12 @@ page 50100 "Distribution Setup"
                     field("Previous Year"; Rec."Previous Year")
                     {
                         Caption = 'Previous Year';
+                        Visible = true;
                     }
                     field("Previous Month"; Rec."Previous Month")
                     {
                         Caption = 'Previous Month';
+                        Visible = true;
                     }
                 }
                 group(To)
@@ -121,6 +123,8 @@ page 50100 "Distribution Setup"
     end;
 
     var
-        Sales: Page "Sales Order";
-        DistributionSubform: Page "Distribution Subform";
+        SalesLine: Record 36;
+        Saleslinepage: Page 41;
+        item: Record item;
+
 }

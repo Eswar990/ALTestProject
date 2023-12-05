@@ -1,9 +1,9 @@
 table 50100 "Distribution Header"
 {
     Caption = 'Distribution Header';
-    DrillDownPageId = "Reference Data List";
-    LookupPageId = "Reference Data List";
-    DataClassification = CustomerContent;
+    // DrillDownPageId = "Reference Data List";
+    // LookupPageId = "Reference Data List";
+    DataClassification = ToBeClassified;
 
     fields
     {
