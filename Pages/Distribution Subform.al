@@ -40,7 +40,7 @@ page 50102 "Distribution Subform"
                 field("Shortcut Dimension 3 Three"; Rec."Shortcut Dimension 3 Three")
                 {
                 }
-                field("Percentage Thee"; Rec."Percentage Thee")
+                field("Percentage Thee"; Rec."Percentage Three")
                 {
                 }
 
