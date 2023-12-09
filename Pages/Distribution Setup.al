@@ -3,7 +3,7 @@ page 50100 "Distribution Setup"
     PageType = Document;
     ApplicationArea = All;
     RefreshOnActivate = true;
-    // UsageCategory = Administration;
+    UsageCategory = Tasks;
     Caption = 'Distribution Setup';
     SourceTable = "Distribution Header";
 
@@ -106,7 +106,7 @@ page 50100 "Distribution Setup"
                     DistributionLine."Shortcut Dimension 3 Three" := DimensionValue."Shortcut Dimension 3 Three";
                     DistributionLine."Percentage One" := DimensionValue."Percentage One";
                     DistributionLine."Percentage Two" := DimensionValue."Percentage Two";
-                    DistributionLine."Percentage Thee" := DimensionValue."Percentage Thee";
+                    DistributionLine."Percentage Thee" := DimensionValue."Percentage Three";
                     DistributionLine.Insert(false);
                 until DimensionValue.Next() = 0;
         end;
