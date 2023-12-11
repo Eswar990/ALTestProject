@@ -5,7 +5,7 @@ page 50103 "Distribution Entries"
     PageType = List;
     SourceTable = "G/L Entry";
     Editable = false;
-    UsageCategory = Administration;
+    UsageCategory = Tasks;
 
     layout
     {

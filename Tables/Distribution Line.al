@@ -54,6 +54,10 @@ table 50102 "Distribution Line"
         {
             Caption = 'Percentage Three';
         }
+        field(11; "Line No."; Integer)
+        {
+            Caption = '"Line No."';
+        }
 
     }
     keys

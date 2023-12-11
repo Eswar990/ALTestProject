@@ -25,4 +25,9 @@ page 50101 "Reference Data List"
             }
         }
     }
+    trigger OnOpenPage()
+    begin
+        Rec.SetCurrentKey("Sorting Value");
+        Rec.Ascending(true)
+    end;
 }

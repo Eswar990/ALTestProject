@@ -1,6 +1,6 @@
 page 50100 "Distribution Setup"
 {
-    PageType = Document;
+    PageType = Card;
     ApplicationArea = All;
     RefreshOnActivate = true;
     UsageCategory = Tasks;
@@ -18,11 +18,14 @@ page 50100 "Distribution Setup"
                     Caption = 'From';
                     field("Previous Year"; Rec."Previous Year")
                     {
+                        TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
                         Caption = 'Previous Year';
                         Visible = true;
+
                     }
                     field("Previous Month"; Rec."Previous Month")
                     {
+                        TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
                         Caption = 'Previous Month';
                         Visible = true;
                     }
@@ -33,6 +36,7 @@ page 50100 "Distribution Setup"
                     field("year"; Rec.year)
                     {
                         Caption = 'Year';
+                        TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
                         trigger OnValidate()
                         begin
                             UpdateDistributionSetupLines()
@@ -41,6 +45,7 @@ page 50100 "Distribution Setup"
                     field("Month"; Rec.Month)
                     {
                         Caption = 'Month';
+                        TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
                         trigger OnValidate()
                         begin
                             UpdateDistributionSetupLines();
@@ -64,6 +69,7 @@ page 50100 "Distribution Setup"
         {
             action("Cpoy From pre. Deltails")
             {
+                Caption = 'Cpoy From pre. Deltails';
                 Image = Copy;
 
                 trigger OnAction()
@@ -74,13 +80,15 @@ page 50100 "Distribution Setup"
 
             action("Update Emp. Deltails")
             {
-                image = UpdateDescription;
+                Caption = 'Update Emp. Deltails';
+                Image = UpdateDescription;
 
                 trigger OnAction()
                 begin
 
                 end;
             }
+
         }
     }
 
@@ -120,11 +128,12 @@ page 50100 "Distribution Setup"
         DeleteDistributionData: Codeunit DeleteDistributionData;
     begin
         DeleteDistributionData.DeleteDistributionHeaderData();
+        // Rec.DeleteAll();
     end;
 
-    var
-        SalesLine: Record 36;
-        Saleslinepage: Page 41;
-        item: Record item;
+    trigger OnOpenPage()
+    begin
+        CurrPage.Editable(true);
+    end;
 
 }
