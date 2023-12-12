@@ -128,7 +128,6 @@ page 50100 "Distribution Setup"
         DeleteDistributionData: Codeunit DeleteDistributionData;
     begin
         DeleteDistributionData.DeleteDistributionHeaderData();
-        // Rec.DeleteAll();
     end;
 
     trigger OnOpenPage()

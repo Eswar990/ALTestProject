@@ -100,24 +100,24 @@ page 50103 "Distribution Entries"
         }
     }
 
-    trigger OnOpenPage()
-    begin
-        // Rec.FilterGroup(11);
-        // Rec.SetFilter("Document No.", '1*');
-        // Rec.FilterGroup(12);
-        // Rec.SetFilter("Document No.", '*7*');
-        // rec.FilterGroup(0);
-        Rec.FilterGroup(-1);
-        Rec.SetRange("Entry No.", 250, 290);
-        Rec.SetRange("Document Type", Rec."Document Type"::Payment);
-        if (Rec.FindSet() = true) then begin
-            repeat
-                Rec.Mark(true);
-            until Rec.Next() = 0
-        end;
-        Rec.MarkedOnly(true);
-        // Rec.FilterGroup(0);
-    end;
+    // trigger OnOpenPage()
+    // begin
+    //     // Rec.FilterGroup(11);
+    //     // Rec.SetFilter("Document No.", '1*');
+    //     // Rec.FilterGroup(12);
+    //     // Rec.SetFilter("Document No.", '*7*');
+    //     // rec.FilterGroup(0);
+    //     Rec.FilterGroup(-1);
+    //     Rec.SetRange("Entry No.", 250, 290);
+    //     Rec.SetRange("Document Type", Rec."Document Type"::Payment);
+    //     if (Rec.FindSet() = true) then begin
+    //         repeat
+    //             Rec.Mark(true);
+    //         until Rec.Next() = 0
+    //     end;
+    //     Rec.MarkedOnly(true);
+    //     // Rec.FilterGroup(0);
+    // end;
 
     var
         AccountCategoryinsertedGLentry: Codeunit AccountCategoryinsertedGLentry;
