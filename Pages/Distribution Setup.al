@@ -123,16 +123,26 @@ page 50100 "Distribution Setup"
         end;
     end;
 
+
+
     trigger OnClosePage()
     var
         DeleteDistributionData: Codeunit DeleteDistributionData;
     begin
+        // MyProcedure();
         DeleteDistributionData.DeleteDistributionHeaderData();
     end;
 
+    // trigger OnQueryClosePage()
+    // begin
+
+    // end;
     trigger OnOpenPage()
     begin
         CurrPage.Editable(true);
     end;
 
+    var
+        SalesInvoice: Record "Sales Header";
+        SalesOrder: Page "Sales Order";
 }

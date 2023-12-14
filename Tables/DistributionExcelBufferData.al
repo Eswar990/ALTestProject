@@ -45,10 +45,6 @@ table 50106 "Distribution Excel Buffer Data"
         {
             Caption = 'Invoice Month';
         }
-        // field(12; "Invoice Description"; text[100])
-        // {
-        //     Caption = '';
-        // }
         field(13; "File Name"; Text[50])
         {
             Caption = 'File Name';

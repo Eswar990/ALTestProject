@@ -33,10 +33,6 @@ page 50107 "Distribution Excel Data"
                 {
 
                 }
-                // field("Invoice Description"; Rec."Invoice Description")
-                // {
-                //     Caption = '';
-                // }
                 field(Projects; Rec.Projects)
                 {
 

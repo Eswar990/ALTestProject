@@ -65,6 +65,7 @@ page 50102 "Distribution Subform"
                 begin
                     ReadExcelSheet();
                     ImportExcelData();
+                    // MyProcedure();
                 end;
             }
 
@@ -100,6 +101,7 @@ page 50102 "Distribution Subform"
         LineNo: Integer;
         MaxRow: Integer;
     begin
+        Distributionline.DeleteAll();
         Distributionline.Reset();
         if (Distributionline.FindLast() = true) then
             LineNo := Distributionline."Line No.";
@@ -155,12 +157,58 @@ page 50102 "Distribution Subform"
         end;
     end;
 
+    local procedure MyProcedure()
+    var
+        FirstLineNo: Integer;
+        LastLineNo: Integer;
+        CopyLineno: Integer;
+        Count: Integer;
+        Distributionline: Record "Distribution Line";
+        DistributionlineCopy: Record "Distribution Line Copy";
+    begin
+        Distributionline.Reset();
+        if (Distributionline.FindFirst() = true) then
+            FirstLineNo := Distributionline."Line No.";
+
+        if (Distributionline.FindLast() = true) then
+            LastLineNo := Distributionline."Line No.";
+
+        DistributionlineCopy.Reset();
+        if (DistributionlineCopy.FindLast() = true) then
+            CopyLineno := DistributionlineCopy."Line No."
+        else begin
+            DistributionlineCopy.DeleteAll();
+            CopyLineno := 0;
+        end;
+
+
+        for Count := FirstLineNo to LastLineNo do begin
+            CopyLineno := CopyLineno + 1000;
+
+            DistributionlineCopy.Init();
+            DistributionlineCopy."Line No." := CopyLineno;
+            // DistributionlineCopy.Year := Distributionline.Year;
+            // DistributionlineCopy.Month := Distributionline.Month;
+
+            DistributionlineCopy.Insert(false);
+        end;
+
+    end;
+
     trigger OnClosePage()
     var
         DeleteDistributionData: Codeunit DeleteDistributionData;
     begin
         DeleteDistributionData.DeleteDistributionLineData();
-        // Rec.DeleteAll();
+    end;
+
+    trigger OnQueryClosePage(CloseAction: Action): Boolean
+    var
+        DeleteDistributionData: Codeunit DeleteDistributionData;
+    begin
+        if ((Rec.Year = '') or (Rec.Month = '') or (Rec."Shortcut Dimension 1 Code" = '')) then
+            exit;
+        DeleteDistributionData.CopyFromDistributionLine(Rec.Year, Rec.Month, Rec."Shortcut Dimension 1 Code");
     end;
 
     var

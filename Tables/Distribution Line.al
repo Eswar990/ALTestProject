@@ -1,8 +1,6 @@
 table 50102 "Distribution Line"
 {
     Caption = 'Distribution Line';
-    // DrillDownPageId = Dimensions;
-    // LookupPageId = Dimensions;
     DataClassification = ToBeClassified;
 
     fields
