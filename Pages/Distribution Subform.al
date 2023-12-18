@@ -4,11 +4,13 @@ page 50102 "Distribution Subform"
     PageType = ListPart;
     RefreshOnActivate = true;
     SourceTable = "Distribution Line";
-    // AutoSplitKey = true;
-    // DelayedInsert = true;
-    // InsertAllowed = true;
-    // ModifyAllowed = true;
-    // SaveValues = true;
+    DelayedInsert = true;
+    LinksAllowed = false;
+    MultipleNewLines = true;
+    AutoSplitKey = true;
+    InsertAllowed = true;
+    ModifyAllowed = true;
+    SaveValues = true;
 
     layout
     {
@@ -18,12 +20,35 @@ page 50102 "Distribution Subform"
             {
                 field(Year; Rec.Year)
                 {
+                    trigger OnValidate()
+                    var
+                        DistributionHeader: Record "Distribution Header";
+                        LineNo: Integer;
+                    begin
+                        DistributionHeader.SetRange("User ID", Rec."User ID");
+                        DistributionHeader.FindFirst();
+                        if (Rec.Year <> DistributionHeader.year) then
+                            Error(HeaderAndLineYearMustBeSame);
+                    end;
                 }
                 field(Month; Rec.Month)
                 {
+                    trigger OnValidate()
+                    var
+                        DistributionHeader: Record "Distribution Header";
+                    begin
+                        DistributionHeader.SetRange("User ID", Rec."User ID");
+                        DistributionHeader.FindFirst();
+                        if (Rec.Month <> DistributionHeader.Month) then
+                            Error(HeaderAndLineMonthMustBeSame);
+                    end;
                 }
                 field("Shortcut Dimension 1 Code"; Rec."Shortcut Dimension 1 Code")
                 {
+                    // trigger OnValidate()
+                    // begin
+                    //     SetFilterProcedure(Rec."Shortcut Dimension 1 Code")
+                    // end;
                 }
                 field("Shortcut Dimension 2 Code"; Rec."Shortcut Dimension 2 Code")
                 {
@@ -45,6 +70,14 @@ page 50102 "Distribution Subform"
                 }
                 field("Percentage Thee"; Rec."Percentage Three")
                 {
+                }
+                field("Line No."; Rec."Line No.")
+                {
+                    Visible = false;
+                }
+                field("User ID"; Rec."User ID")
+                {
+                    Visible = false;
                 }
 
             }
@@ -125,14 +158,16 @@ page 50102 "Distribution Subform"
             Distributionline."Percentage Two" := GetDecimal(RowNo, 8);
             Evaluate(Distributionline."Shortcut Dimension 3 Three", GetValueAtCell(RowNo, 9));
             Distributionline."Percentage Three" := GetDecimal(RowNo, 10);
-            DistributionHeader.Get();
+            DistributionHeader.SetRange(year, Distributionline.Year);
+            DistributionHeader.SetRange(Month, Distributionline.Month);
+            DistributionHeader.FindLast();
+            Distributionline.Validate("User ID", DistributionHeader."User ID");
             if (DistributionHeader.year <> Distributionline.Year) then
                 Error(YearMustBeSame)
             else
                 if (DistributionHeader.Month <> Distributionline.Month) then
                     Error(MonthMustBeSame);
-
-            Distributionline.Insert();
+            Distributionline.Insert(true);
         end;
         Message(ExcelImportSucces);
     end;
@@ -157,58 +192,35 @@ page 50102 "Distribution Subform"
         end;
     end;
 
-    local procedure MyProcedure()
+
+    procedure SetFilterProcedure(EmployeeCode: Code[20])
     var
-        FirstLineNo: Integer;
-        LastLineNo: Integer;
-        CopyLineno: Integer;
         Count: Integer;
-        Distributionline: Record "Distribution Line";
-        DistributionlineCopy: Record "Distribution Line Copy";
+        EmployeeCodeIsExisted: Label ' %1 Employee Code Is Existed';
     begin
-        Distributionline.Reset();
-        if (Distributionline.FindFirst() = true) then
-            FirstLineNo := Distributionline."Line No.";
-
-        if (Distributionline.FindLast() = true) then
-            LastLineNo := Distributionline."Line No.";
-
-        DistributionlineCopy.Reset();
-        if (DistributionlineCopy.FindLast() = true) then
-            CopyLineno := DistributionlineCopy."Line No."
-        else begin
-            DistributionlineCopy.DeleteAll();
-            CopyLineno := 0;
-        end;
-
-
-        for Count := FirstLineNo to LastLineNo do begin
-            CopyLineno := CopyLineno + 1000;
-
-            DistributionlineCopy.Init();
-            DistributionlineCopy."Line No." := CopyLineno;
-            // DistributionlineCopy.Year := Distributionline.Year;
-            // DistributionlineCopy.Month := Distributionline.Month;
-
-            DistributionlineCopy.Insert(false);
-        end;
-
+        Rec.SetRange("Shortcut Dimension 1 Code", EmployeeCode);
+        if (Rec.FindSet(false) = true) then
+            repeat
+                Count += 1;
+                if (Count > 0) then
+                    Error(EmployeeCodeIsExisted, EmployeeCode);
+            until Rec.Next() = 0
     end;
 
     trigger OnClosePage()
     var
         DeleteDistributionData: Codeunit DeleteDistributionData;
     begin
-        DeleteDistributionData.DeleteDistributionLineData();
+        // DeleteDistributionData.DeleteDistributionLineData();
     end;
 
     trigger OnQueryClosePage(CloseAction: Action): Boolean
     var
         DeleteDistributionData: Codeunit DeleteDistributionData;
     begin
-        if ((Rec.Year = '') or (Rec.Month = '') or (Rec."Shortcut Dimension 1 Code" = '')) then
-            exit;
-        DeleteDistributionData.CopyFromDistributionLine(Rec.Year, Rec.Month, Rec."Shortcut Dimension 1 Code");
+        // if ((Rec.Year = '') or (Rec.Month = '') or (Rec."Shortcut Dimension 1 Code" = '')) then
+        //     exit;
+        // DeleteDistributionData.CopyFromDistributionLinetwo(Rec.Year, Rec.Month, Rec."Shortcut Dimension 1 Code", Rec."User ID");
     end;
 
     var
@@ -218,8 +230,9 @@ page 50102 "Distribution Subform"
         UploadMsg: Label 'Please Choose The Excel File';
         NoFileMsg: Label 'No Excel file Found';
         ExcelImportSucces: Label 'Excel Imported Succesfully';
-        MonthMustBeSame: Label 'Month Must Be Same';
+        MonthMustBeSame: Label 'Month Must be Same';
         YearMustBeSame: Label 'Year Must be Same';
-
+        HeaderAndLineYearMustBeSame: Label 'Header and Line Year Must be Same';
+        HeaderAndLineMonthMustBeSame: Label 'Header and Line Month Must be Same';
 }
 

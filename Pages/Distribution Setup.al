@@ -1,18 +1,22 @@
 page 50100 "Distribution Setup"
 {
-    PageType = Card;
+    PageType = Document;
     ApplicationArea = All;
     RefreshOnActivate = true;
-    UsageCategory = Tasks;
+    UsageCategory = Documents;
     Caption = 'Distribution Setup';
     SourceTable = "Distribution Header";
-
     layout
     {
         area(Content)
         {
             group(General)
             {
+                field("User ID"; Rec."User ID")
+                {
+                    Caption = 'User ID';
+
+                }
                 group(From)
                 {
                     Caption = 'From';
@@ -48,6 +52,8 @@ page 50100 "Distribution Setup"
                         TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
                         trigger OnValidate()
                         begin
+                            if ((Rec.Month = xRec.Month) or (Rec.Month = '')) then
+                                Error(MonthAlreadyExisted, Rec.Month);
                             UpdateDistributionSetupLines();
                         end;
                     }
@@ -56,8 +62,9 @@ page 50100 "Distribution Setup"
             part(DistributionLine; "Distribution Subform")
             {
                 Caption = 'Lines';
-                Editable = true;
+                Editable = Rec."User ID" <> '';
                 Enabled = true;
+                SubPageLink = "User ID" = field("User ID");
                 UpdatePropagation = Both;
             }
         }
@@ -130,19 +137,22 @@ page 50100 "Distribution Setup"
         DeleteDistributionData: Codeunit DeleteDistributionData;
     begin
         // MyProcedure();
-        DeleteDistributionData.DeleteDistributionHeaderData();
+        // DeleteDistributionData.DeleteDistributionHeaderData();
     end;
 
     // trigger OnQueryClosePage()
     // begin
 
     // end;
-    trigger OnOpenPage()
-    begin
-        CurrPage.Editable(true);
-    end;
+    // trigger OnOpenPage()
+    // begin
+    //     CurrPage.Editable(true);
+    // end;
 
     var
+        MonthAlreadyExisted: Label '%1 Month Already Existed in the Distribution Setup ';
         SalesInvoice: Record "Sales Header";
         SalesOrder: Page "Sales Order";
+        SalesLine: Record "Sales Line";
+        Salessubform: Page "Sales Order Subform";
 }

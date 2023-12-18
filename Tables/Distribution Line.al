@@ -55,14 +55,24 @@ table 50102 "Distribution Line"
         field(11; "Line No."; Integer)
         {
             Caption = '"Line No."';
+            AutoIncrement = true;
+        }
+
+        field(12; "User ID"; Code[20])
+        {
+            Caption = 'User ID';
         }
 
     }
     keys
     {
-        key(PK; Year, Month, "Shortcut Dimension 1 Code")
+        key(PK; "User ID", Year, Month, "Shortcut Dimension 1 Code", "Line No.")
         {
             Clustered = true;
         }
     }
+    var
+        sO: Record "Sales Header";
+        SL: Record "Sales Line";
+        Salesorder: Page "Sales Order";
 }

@@ -1,7 +1,7 @@
 table 50100 "Distribution Header"
 {
     Caption = 'Distribution Header';
-    DataClassification = ToBeClassified;
+    DataClassification = CustomerContent;
 
     fields
     {
@@ -24,6 +24,12 @@ table 50100 "Distribution Header"
         {
 
         }
+        field(6; "No. Series"; Code[20])
+        {
+            Caption = 'No. Series';
+            Editable = false;
+            TableRelation = "No. Series";
+        }
     }
 
     keys
@@ -34,5 +40,15 @@ table 50100 "Distribution Header"
         }
     }
 
+    trigger OnInsert()
+    begin
+        if (Rec."User ID" = '') then begin
+            NoSeriesMgt.InitSeries('DNS', xRec."No. Series", 0D, "User ID", "No. Series");
+        end;
+    end;
+
     var
+        SalesSetup: Record "Sales & Receivables Setup";
+        NoSeriesMgt: Codeunit NoSeriesManagement;
+        SelectNoSeriesAllowed: Boolean;
 }
