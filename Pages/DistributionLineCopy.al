@@ -46,7 +46,12 @@ page 50108 "Distribution Line Copy"
                 field("Percentage Thee"; Rec."Percentage Three")
                 {
                 }
+                field("User ID"; Rec."User ID")
+                {
+
+                }
             }
         }
     }
+
 }

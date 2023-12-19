@@ -46,9 +46,12 @@ table 50107 "Distribution Line Copy"
         }
         field(11; "Line No."; Integer)
         {
-            Caption = '"Line No."';
+            Caption = 'Line No.';
         }
-
+        field(12; "User ID"; Code[20])
+        {
+            Caption = 'User ID';
+        }
     }
 
     keys

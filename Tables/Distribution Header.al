@@ -7,6 +7,12 @@ table 50100 "Distribution Header"
     {
         field(1; "User ID"; Code[50])
         {
+            trigger OnValidate()
+            var
+                myInt: Integer;
+            begin
+
+            end;
         }
         field(2; year; Code[20])
         {
@@ -46,6 +52,7 @@ table 50100 "Distribution Header"
             NoSeriesMgt.InitSeries('DNS', xRec."No. Series", 0D, "User ID", "No. Series");
         end;
     end;
+
 
     var
         SalesSetup: Record "Sales & Receivables Setup";

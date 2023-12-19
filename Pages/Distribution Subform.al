@@ -134,8 +134,10 @@ page 50102 "Distribution Subform"
         LineNo: Integer;
         MaxRow: Integer;
     begin
-        Distributionline.DeleteAll();
         Distributionline.Reset();
+        DistributionHeader.SetRange("User ID", Rec."User ID");
+        if (DistributionHeader.FindLast() = true) then
+            Distributionline.SetRange("User ID", DistributionHeader."User ID");
         if (Distributionline.FindLast() = true) then
             LineNo := Distributionline."Line No.";
 
@@ -167,7 +169,7 @@ page 50102 "Distribution Subform"
             else
                 if (DistributionHeader.Month <> Distributionline.Month) then
                     Error(MonthMustBeSame);
-            Distributionline.Insert(true);
+            Distributionline.Insert();
         end;
         Message(ExcelImportSucces);
     end;

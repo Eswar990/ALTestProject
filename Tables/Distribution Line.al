@@ -66,7 +66,7 @@ table 50102 "Distribution Line"
     }
     keys
     {
-        key(PK; "User ID", Year, Month, "Shortcut Dimension 1 Code", "Line No.")
+        key(PK; "User ID", "Line No.")
         {
             Clustered = true;
         }

@@ -1,9 +1,11 @@
 page 50100 "Distribution Setup"
 {
-    PageType = Document;
+    PageType = Card;
     ApplicationArea = All;
-    RefreshOnActivate = true;
-    UsageCategory = Documents;
+    // RefreshOnActivate = true;
+    InsertAllowed = false;
+    DeleteAllowed = false;
+    UsageCategory = Administration;
     Caption = 'Distribution Setup';
     SourceTable = "Distribution Header";
     layout
@@ -80,19 +82,28 @@ page 50100 "Distribution Setup"
                 Image = Copy;
 
                 trigger OnAction()
+                var
+                    DistributionLine: Record "Distribution Line";
                 begin
+                    DistributionLine.SetRange("User ID", Rec."User ID");
+                    DistributionLine.SetRange(Year, Rec.year);
+                    DistributionLine.SetRange(Month, Rec.Month);
+                    if (DistributionLine.FindSet(false) = false) then begin
+                        repeat
+                        until DistributionLine.Next() = 0;
 
+                    end;
                 end;
             }
 
             action("Update Emp. Deltails")
             {
-                Caption = 'Update Emp. Deltails';
+                Caption = 'Post';
                 Image = UpdateDescription;
 
                 trigger OnAction()
                 begin
-
+                    PostMyDocument()
                 end;
             }
 
@@ -130,7 +141,36 @@ page 50100 "Distribution Setup"
         end;
     end;
 
+    local procedure PostMyDocument()
+    var
+        DistributionLine: Record "Distribution Line";
+        ConfirmManagement: Codeunit "Confirm Management";
+    begin
+        if (ConfirmManagement.GetResponse('Please Select Post', false)) then begin
+            DistributionLine.SetRange("User ID", rec."User ID");
+            if (DistributionLine.FindSet() = true) then
+                repeat
+                    CopyDistributionLines(DistributionLine)
+                until DistributionLine.Next() = 0;
+        end;
+    end;
 
+    local procedure CopyDistributionLines(var DistributionLine: Record "Distribution Line")
+    var
+        DistributionLineCopy: Record "Distribution Line Copy";
+    begin
+        DistributionLineCopy.Init();
+        DistributionLineCopy.Insert();
+        DistributionLineCopy.Validate("User ID", Rec."User ID");
+        DistributionLineCopy.Validate(Year, Rec.year);
+        DistributionLineCopy.Validate(Month, Rec.Month);
+        DistributionLineCopy.Validate("Shortcut Dimension 1 Code", DistributionLine."Shortcut Dimension 1 Code");
+        DistributionLineCopy.Validate("Shortcut Dimension 2 Code", DistributionLine."Shortcut Dimension 2 Code");
+        DistributionLineCopy.Validate("Shortcut Dimension 3 Code", DistributionLine."Shortcut Dimension 3 Code");
+        DistributionLineCopy.Modify()
+
+
+    end;
 
     trigger OnClosePage()
     var
@@ -144,10 +184,10 @@ page 50100 "Distribution Setup"
     // begin
 
     // end;
-    // trigger OnOpenPage()
-    // begin
-    //     CurrPage.Editable(true);
-    // end;
+    trigger OnOpenPage()
+    begin
+        // Rec.InsertIfNotExists();
+    end;
 
     var
         MonthAlreadyExisted: Label '%1 Month Already Existed in the Distribution Setup ';
