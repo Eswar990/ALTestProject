@@ -2,10 +2,10 @@ page 50100 "Distribution Setup"
 {
     PageType = Card;
     ApplicationArea = All;
-    // RefreshOnActivate = true;
-    InsertAllowed = false;
-    DeleteAllowed = false;
-    UsageCategory = Administration;
+    RefreshOnActivate = true;
+    InsertAllowed = true;
+    DeleteAllowed = true;
+    UsageCategory = Tasks;
     Caption = 'Distribution Setup';
     SourceTable = "Distribution Header";
     layout
@@ -52,6 +52,8 @@ page 50100 "Distribution Setup"
                         TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
                         trigger OnValidate()
                         begin
+                            if ((Rec.year = xRec.year)) then
+                                Error(MonthAlreadyExisted, Rec.Month);
                             UpdateDistributionSetupLines()
                         end;
                     }
@@ -61,7 +63,7 @@ page 50100 "Distribution Setup"
                         TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
                         trigger OnValidate()
                         begin
-                            if ((Rec.Month = xRec.Month) or (Rec.Month = '')) then
+                            if ((Rec.Month = xRec.Month) = true) then
                                 Error(MonthAlreadyExisted, Rec.Month);
                             UpdateDistributionSetupLines();
                         end;
@@ -89,25 +91,31 @@ page 50100 "Distribution Setup"
                 Image = Copy;
 
                 trigger OnAction()
-                var
-                    DistributionLineCopy: Record "Distribution Line Copy";
                 begin
-                    if ((Rec."Previous Year" = '') and (Rec.year = '') = true) then begin
+                    if ((Rec."Previous Year" = '') or (Rec.year = '') = true) then begin
                         Error(PreviousYearShouldNotBeEmpty);
                     end else
-                        if ((Rec."Previous Month" = '') and (Rec.Month = '') = true) then
+                        if ((Rec."Previous Month" = '') or (Rec.Month = '') = true) then
                             Error(PreviousMonthShouldNotBeEmpty);
+
                     DeletedDistribution.CopyFromPreviousDetails(Rec.year, Rec.Month, Rec."User ID")
                 end;
             }
 
             action("Update Emp. Deltails")
             {
-                Caption = 'Post';
+                Caption = 'Update Emp. Deltails';
                 Image = UpdateDescription;
 
                 trigger OnAction()
                 begin
+                    if ((Rec.year = '') = true) then
+                        Error(YearShoulNotBeEmpty)
+                    else
+                        if ((Rec.Month = '') = true) then
+                            Error(MonthShoulNotBeEmpty);
+
+                    DeletedDistribution.CopyFromPreviousDetails(Rec.year, Rec.Month, Rec."User ID")
                 end;
             }
 
@@ -117,28 +125,31 @@ page 50100 "Distribution Setup"
     local procedure UpdateDistributionSetupLines()
     var
         DistributionLine: Record "Distribution Line";
-        DimensionValue: Record "Dimension Value";
+        DistributionLineCopy: Record "Distribution Line Copy";
     begin
         if (((Rec.year <> '') and (Rec.Month <> '')) = true) then begin
-            DimensionValue.Reset();
-            DimensionValue.SetRange(Year, Rec.Year);
-            DimensionValue.SetRange(Month, Rec.Month);
+            DistributionLineCopy.Reset();
+            DistributionLineCopy.SetRange(Year, Rec.Year);
+            DistributionLineCopy.SetRange(Month, Rec.Month);
 
-            if (DimensionValue.FindSet(false)) then
-                repeat
-                    DistributionLine.Init();
-                    DistributionLine.Year := DimensionValue.Year;
-                    DistributionLine.Month := DimensionValue.Month;
-                    DistributionLine."Shortcut Dimension 1 Code" := DimensionValue.Code;
-                    DistributionLine."Shortcut Dimension 2 Code" := DimensionValue."Shortcut Dimension 2 Code";
-                    DistributionLine."Shortcut Dimension 3 Code" := DimensionValue."Shortcut Dimension 3 Code";
-                    DistributionLine."Shortcut Dimension 3 Two" := DimensionValue."Shortcut Dimension 3 Two";
-                    DistributionLine."Shortcut Dimension 3 Three" := DimensionValue."Shortcut Dimension 3 Three";
-                    DistributionLine."Percentage One" := DimensionValue."Percentage One";
-                    DistributionLine."Percentage Two" := DimensionValue."Percentage Two";
-                    DistributionLine."Percentage Three" := DimensionValue."Percentage Three";
-                    DistributionLine.Insert(false);
-                until DimensionValue.Next() = 0;
+            if (DistributionLineCopy.FindSet(false)) then
+                DistributionLine.DeleteAll();
+            repeat
+                DistributionLine.Init();
+                Distributionline."User ID" := Rec."User ID";
+                Distributionline.year := DistributionLineCopy.Year;
+                Distributionline.Month := DistributionLineCopy.Month;
+                Distributionline."Line No." := DistributionLineCopy."Line No.";
+                Distributionline."Shortcut Dimension 1 Code" := DistributionLineCopy."Shortcut Dimension 1 Code";
+                Distributionline."Shortcut Dimension 2 Code" := DistributionLineCopy."Shortcut Dimension 2 Code";
+                Distributionline."Shortcut Dimension 3 Code" := DistributionLineCopy."Shortcut Dimension 3 Code";
+                Distributionline."Shortcut Dimension 3 Two" := DistributionLineCopy."Shortcut Dimension 3 Two";
+                Distributionline."Shortcut Dimension 3 Three" := DistributionLineCopy."Shortcut Dimension 3 Three";
+                Distributionline."Percentage One" := DistributionLineCopy."Percentage One";
+                Distributionline."Percentage Two" := DistributionLineCopy."Percentage Two";
+                Distributionline."Percentage Three" := DistributionLineCopy."Percentage Three";
+                DistributionLine.Insert();
+            until DistributionLineCopy.Next() = 0;
         end;
         if ((Rec.year = '') or (Rec.Month = '')) then begin
             DistributionLine.DeleteAll();
@@ -150,26 +161,20 @@ page 50100 "Distribution Setup"
         DistributionLine: Record "Distribution Line";
         ConfirmManagement: Codeunit "Confirm Management";
     begin
-        // if (ConfirmManagement.GetResponse('Please Select Post', false)) then begin
         DistributionLine.SetRange("User ID", rec."User ID");
-        if (DistributionLine.FindSet() = true) then
+        if (DistributionLine.FindSet() = true) then begin
+            DistributionLineCopy.SetRange(Year, DistributionLine.Year);
+            DistributionLineCopy.SetRange(Month, DistributionLine.Month);
+            if (DistributionLineCopy.FindFirst() = true) then
+                DistributionLineCopy.DeleteAll();
             repeat
                 CopyDistributionLines(DistributionLine)
             until DistributionLine.Next() = 0;
-        // end;
+        end;
     end;
 
     local procedure CopyDistributionLines(var DistributionLine: Record "Distribution Line")
-    var
-        DistributionLineCopy: Record "Distribution Line Copy";
     begin
-        DistributionLineCopy.SetRange(Year, DistributionLine.Year);
-        DistributionLineCopy.SetRange(Month, DistributionLine.Month);
-        DistributionLineCopy.SetRange("User ID", DistributionLine."User ID");
-        DistributionLineCopy.SetRange("Shortcut Dimension 1 Code", DistributionLine."Shortcut Dimension 1 Code");
-        if (DistributionLineCopy.IsEmpty = false) then
-            exit;
-
         DistributionLineCopy.Init();
         DistributionLineCopy.Validate(Year, Rec.year);
         DistributionLineCopy.Validate(Month, Rec.Month);
@@ -184,8 +189,6 @@ page 50100 "Distribution Setup"
         DistributionLineCopy.Validate("Percentage Three", DistributionLine."Percentage Three");
         DistributionLineCopy.Validate("Line No.", DistributionLine."Line No.");
         DistributionLineCopy.Insert();
-
-
     end;
 
     trigger OnClosePage()
@@ -201,18 +204,16 @@ page 50100 "Distribution Setup"
         PostMyDocument();
     end;
 
-    trigger OnOpenPage()
-    begin
-        // Rec.InsertIfNotExists();
-    end;
-
     var
+        DistributionLineCopy: Record "Distribution Line Copy";
         DeletedDistribution: Codeunit DeleteDistributionData;
         MonthAlreadyExisted: Label '%1 Month Already Existed in the Distribution Setup ';
         PreviousMonthShouldNotBeEmpty: Label 'Previous Month Should Not be Empty in the Distribution Setup ';
         PreviousYearShouldNotBeEmpty: Label 'Previous Year Should Not be Empty in the Distribution Setup ';
         PrevYearAndYearMustNotBeSame: Label 'Previous Year and Year Must Not be Same';
         PrevMonthAndMonthMustNotBeSame: Label 'Previous Month and Month Must Not be Same';
+        YearShoulNotBeEmpty: Label 'Year Should Not be Emprty';
+        MonthShoulNotBeEmpty: Label 'Month Should Not be Emprty';
         SalesInvoice: Record "Sales Header";
         SalesOrder: Page "Sales Order";
         SalesLine: Record "Sales Line";

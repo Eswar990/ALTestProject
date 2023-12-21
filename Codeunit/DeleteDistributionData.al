@@ -166,16 +166,23 @@ codeunit 50100 DeleteDistributionData
         DistributionLineCopy.SetRange(Month, Month);
         DistributionLineCopy.SetRange("User ID", UserID);
         if (DistributionLineCopy.FindSet(false) = true) then begin
+            Distributionline.SetRange("User ID", UserID);
+            if (Distributionline.FindFirst() = true) then
+                exit;
             repeat
-                Distributionline.SetRange("User ID", UserID);
-                Distributionline.FindFirst();
-                if (Distributionline."User ID" = UserID) then
-                    Distributionline.DeleteAll();
                 Distributionline.Init();
                 Distributionline."User ID" := DistributionLineCopy."User ID";
                 Distributionline.year := DistributionLineCopy.Year;
                 Distributionline.Month := DistributionLineCopy.Month;
                 Distributionline."Line No." := DistributionLineCopy."Line No.";
+                Distributionline."Shortcut Dimension 1 Code" := DistributionLineCopy."Shortcut Dimension 1 Code";
+                Distributionline."Shortcut Dimension 2 Code" := DistributionLineCopy."Shortcut Dimension 2 Code";
+                Distributionline."Shortcut Dimension 3 Code" := DistributionLineCopy."Shortcut Dimension 3 Code";
+                Distributionline."Shortcut Dimension 3 Two" := DistributionLineCopy."Shortcut Dimension 3 Two";
+                Distributionline."Shortcut Dimension 3 Three" := DistributionLineCopy."Shortcut Dimension 3 Three";
+                Distributionline."Percentage One" := DistributionLineCopy."Percentage One";
+                Distributionline."Percentage Two" := DistributionLineCopy."Percentage Two";
+                Distributionline."Percentage Three" := DistributionLineCopy."Percentage Three";
                 Distributionline.Insert();
             until DistributionLineCopy.Next() = 0;
         end;
