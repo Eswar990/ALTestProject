@@ -19,9 +19,6 @@ page 50108 "Distribution Line Copy"
                 field(Month; Rec.Month)
                 {
                 }
-                field("Line No."; Rec."Line No.")
-                {
-                }
                 field("Shortcut Dimension 1 Code"; Rec."Shortcut Dimension 1 Code")
                 {
                 }
