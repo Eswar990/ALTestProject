@@ -5,6 +5,7 @@ page 50100 "Distribution Setup"
     RefreshOnActivate = true;
     InsertAllowed = true;
     DeleteAllowed = true;
+    Editable = true;
     UsageCategory = Tasks;
     Caption = 'Distribution Setup';
     SourceTable = "Distribution Header";
@@ -17,7 +18,8 @@ page 50100 "Distribution Setup"
                 field("User ID"; Rec."User ID")
                 {
                     Caption = 'User ID';
-
+                    Editable = true;
+                    ToolTip = 'This is a custom field in the header.';
                 }
                 group(From)
                 {
@@ -27,7 +29,6 @@ page 50100 "Distribution Setup"
                         TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
                         Caption = 'Previous Year';
                         Visible = true;
-
                         trigger OnValidate()
                         var
                             myInt: Integer;
@@ -52,9 +53,7 @@ page 50100 "Distribution Setup"
                         TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
                         trigger OnValidate()
                         begin
-                            if ((Rec.year = xRec.year)) then
-                                Error(MonthAlreadyExisted, Rec.Month);
-                            UpdateDistributionSetupLines()
+                            UpdateDistributionSetupLines(Rec."User ID")
                         end;
                     }
                     field("Month"; Rec.Month)
@@ -62,10 +61,9 @@ page 50100 "Distribution Setup"
                         Caption = 'Month';
                         TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
                         trigger OnValidate()
+                        var
                         begin
-                            if ((Rec.Month = xRec.Month) = true) then
-                                Error(MonthAlreadyExisted, Rec.Month);
-                            UpdateDistributionSetupLines();
+                            UpdateDistributionSetupLines(Rec."User ID");
                         end;
                     }
                 }
@@ -122,7 +120,7 @@ page 50100 "Distribution Setup"
         }
     }
 
-    local procedure UpdateDistributionSetupLines()
+    local procedure UpdateDistributionSetupLines(UserID: Code[20])
     var
         DistributionLine: Record "Distribution Line";
         DistributionLineCopy: Record "Distribution Line Copy";
@@ -131,8 +129,9 @@ page 50100 "Distribution Setup"
             DistributionLineCopy.Reset();
             DistributionLineCopy.SetRange(Year, Rec.Year);
             DistributionLineCopy.SetRange(Month, Rec.Month);
-
-            if (DistributionLineCopy.FindSet(false)) then
+            if (DistributionLineCopy.FindSet(false) = true) then
+                DistributionLine.SetRange("User ID", UserID);
+            if (DistributionLine.FindSet(false) = true) then
                 DistributionLine.DeleteAll();
             repeat
                 DistributionLine.Init();
@@ -161,7 +160,7 @@ page 50100 "Distribution Setup"
         DistributionLine: Record "Distribution Line";
         ConfirmManagement: Codeunit "Confirm Management";
     begin
-        DistributionLine.SetRange("User ID", rec."User ID");
+        DistributionLine.SetRange("User ID", Rec."User ID");
         if (DistributionLine.FindSet() = true) then begin
             DistributionLineCopy.SetRange(Year, DistributionLine.Year);
             DistributionLineCopy.SetRange(Month, DistributionLine.Month);
@@ -191,18 +190,25 @@ page 50100 "Distribution Setup"
         DistributionLineCopy.Insert();
     end;
 
-    trigger OnClosePage()
+    trigger OnQueryClosePage(CloseAction: Action): Boolean
     var
         DeleteDistributionData: Codeunit DeleteDistributionData;
     begin
-        // MyProcedure();
-        // DeleteDistributionData.DeleteDistributionHeaderData();
+        PostMyDocument();
+        DeleteDistributionData.DeleteDistributionHeaderData();
     end;
 
-    trigger OnQueryClosePage(CloseAction: Action): Boolean
+    trigger OnAfterGetCurrRecord()
+    var
+        myInt: Integer;
     begin
-        PostMyDocument();
+        CurrPage.Editable := (Rec."User ID" = '') or (Rec."User ID" <> '');
     end;
+
+    // trigger OnOpenPage()
+    // begin
+    //     CurrPage.Editable(true);
+    // end;
 
     var
         DistributionLineCopy: Record "Distribution Line Copy";
@@ -214,8 +220,4 @@ page 50100 "Distribution Setup"
         PrevMonthAndMonthMustNotBeSame: Label 'Previous Month and Month Must Not be Same';
         YearShoulNotBeEmpty: Label 'Year Should Not be Emprty';
         MonthShoulNotBeEmpty: Label 'Month Should Not be Emprty';
-        SalesInvoice: Record "Sales Header";
-        SalesOrder: Page "Sales Order";
-        SalesLine: Record "Sales Line";
-        Salessubform: Page "Sales Order Subform";
 }
