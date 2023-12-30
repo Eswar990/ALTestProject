@@ -21,6 +21,7 @@ page 50101 "Reference Data List"
                 }
                 field("Sorting Value"; Rec."Sorting Value")
                 {
+
                 }
             }
         }

@@ -138,8 +138,11 @@ page 50102 "Distribution Subform"
         DistributionHeader.SetRange("User ID", Rec."User ID");
         if (DistributionHeader.FindLast() = true) then
             Distributionline.SetRange("User ID", DistributionHeader."User ID");
-        if (Distributionline.FindLast() = true) then
+        if (Distributionline.FindLast() = true) then begin
+            if ((Distributionline."Line No." <> 0) and ((Distributionline.Month = '') or (Distributionline.Year = '')) = true) then
+                Distributionline.DeleteAll();
             LineNo := Distributionline."Line No.";
+        end;
 
         TempExcelBuffer.Reset();
         if (TempExcelBuffer.FindLast() = true) then

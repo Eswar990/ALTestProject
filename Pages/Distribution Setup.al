@@ -6,7 +6,7 @@ page 50100 "Distribution Setup"
     InsertAllowed = true;
     DeleteAllowed = true;
     Editable = true;
-    UsageCategory = Tasks;
+    UsageCategory = Administration;
     Caption = 'Distribution Setup';
     SourceTable = "Distribution Header";
     layout
@@ -15,57 +15,59 @@ page 50100 "Distribution Setup"
         {
             group(General)
             {
+                field("year"; Rec.year)
+                {
+                    Caption = 'Year';
+                    TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
+                    trigger OnValidate()
+                    begin
+                        UpdateDistributionSetupLines(Rec."User ID")
+                    end;
+                }
+                field("Month"; Rec.Month)
+                {
+                    Caption = 'Month';
+                    TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
+                    trigger OnValidate()
+                    var
+                    begin
+                        UpdateDistributionSetupLines(Rec."User ID");
+                    end;
+                }
+                // group(From)
+                // {
+                //     Caption = 'From';
+                //     field("Previous Year"; Rec."Previous Year")
+                //     {
+                //         TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
+                //         Caption = 'Previous Year';
+                //         Visible = true;
+                //         trigger OnValidate()
+                //         var
+                //             myInt: Integer;
+                //         begin
+                //             if (Rec."Previous Year" = Rec.year) then
+                //                 Error(PrevYearAndYearMustNotBeSame);
+                //         end;
+                //     }
+                //     field("Previous Month"; Rec."Previous Month")
+                //     {
+                //         TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
+                //         Caption = 'Previous Month';
+                //         Visible = true;
+                //     }
+                // }
+                // group(To)
+                // {
+                //     Caption = 'To';
+
+                // }
                 field("User ID"; Rec."User ID")
                 {
                     Caption = 'User ID';
                     Editable = true;
+                    Visible = false;
                     ToolTip = 'This is a custom field in the header.';
-                }
-                group(From)
-                {
-                    Caption = 'From';
-                    field("Previous Year"; Rec."Previous Year")
-                    {
-                        TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
-                        Caption = 'Previous Year';
-                        Visible = true;
-                        trigger OnValidate()
-                        var
-                            myInt: Integer;
-                        begin
-                            if (Rec."Previous Year" = Rec.year) then
-                                Error(PrevYearAndYearMustNotBeSame);
-                        end;
-                    }
-                    field("Previous Month"; Rec."Previous Month")
-                    {
-                        TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
-                        Caption = 'Previous Month';
-                        Visible = true;
-                    }
-                }
-                group(To)
-                {
-                    Caption = 'To';
-                    field("year"; Rec.year)
-                    {
-                        Caption = 'Year';
-                        TableRelation = "Reference Data".Code where("Sorting Value" = filter(= ''));
-                        trigger OnValidate()
-                        begin
-                            UpdateDistributionSetupLines(Rec."User ID")
-                        end;
-                    }
-                    field("Month"; Rec.Month)
-                    {
-                        Caption = 'Month';
-                        TableRelation = "Reference Data".Code where("Sorting Value" = filter(<> ''));
-                        trigger OnValidate()
-                        var
-                        begin
-                            UpdateDistributionSetupLines(Rec."User ID");
-                        end;
-                    }
                 }
             }
             part(DistributionLine; "Distribution Subform")
@@ -90,32 +92,32 @@ page 50100 "Distribution Setup"
 
                 trigger OnAction()
                 begin
-                    if ((Rec."Previous Year" = '') or (Rec.year = '') = true) then begin
+                    if ((Rec.year = '') = true) then begin
                         Error(PreviousYearShouldNotBeEmpty);
                     end else
-                        if ((Rec."Previous Month" = '') or (Rec.Month = '') = true) then
+                        if ((Rec.Month = '') = true) then
                             Error(PreviousMonthShouldNotBeEmpty);
 
                     DeletedDistribution.CopyFromPreviousDetails(Rec.year, Rec.Month, Rec."User ID")
                 end;
             }
 
-            action("Update Emp. Deltails")
-            {
-                Caption = 'Update Emp. Deltails';
-                Image = UpdateDescription;
+            // action("Update Emp. Deltails")
+            // {
+            //     Caption = 'Update Emp. Deltails';
+            //     Image = UpdateDescription;
 
-                trigger OnAction()
-                begin
-                    if ((Rec.year = '') = true) then
-                        Error(YearShoulNotBeEmpty)
-                    else
-                        if ((Rec.Month = '') = true) then
-                            Error(MonthShoulNotBeEmpty);
+            //     trigger OnAction()
+            //     begin
+            //         if ((Rec.year = '') = true) then
+            //             Error(YearShoulNotBeEmpty)
+            //         else
+            //             if ((Rec.Month = '') = true) then
+            //                 Error(MonthShoulNotBeEmpty);
 
-                    DeletedDistribution.CopyFromPreviousDetails(Rec.year, Rec.Month, Rec."User ID")
-                end;
-            }
+            //         DeletedDistribution.CopyFromPreviousDetails(Rec.year, Rec.Month, Rec."User ID")
+            //     end;
+            // }
 
         }
     }
@@ -198,24 +200,13 @@ page 50100 "Distribution Setup"
         DeleteDistributionData.DeleteDistributionHeaderData();
     end;
 
-    trigger OnAfterGetCurrRecord()
-    var
-        myInt: Integer;
-    begin
-        CurrPage.Editable := (Rec."User ID" = '') or (Rec."User ID" <> '');
-    end;
-
-    // trigger OnOpenPage()
-    // begin
-    //     CurrPage.Editable(true);
-    // end;
 
     var
         DistributionLineCopy: Record "Distribution Line Copy";
         DeletedDistribution: Codeunit DeleteDistributionData;
         MonthAlreadyExisted: Label '%1 Month Already Existed in the Distribution Setup ';
-        PreviousMonthShouldNotBeEmpty: Label 'Previous Month Should Not be Empty in the Distribution Setup ';
-        PreviousYearShouldNotBeEmpty: Label 'Previous Year Should Not be Empty in the Distribution Setup ';
+        PreviousMonthShouldNotBeEmpty: Label 'Previous Month and Month Should Not be Empty in the Distribution Setup ';
+        PreviousYearShouldNotBeEmpty: Label 'Previous Year and Year Should Not be Empty in the Distribution Setup ';
         PrevYearAndYearMustNotBeSame: Label 'Previous Year and Year Must Not be Same';
         PrevMonthAndMonthMustNotBeSame: Label 'Previous Month and Month Must Not be Same';
         YearShoulNotBeEmpty: Label 'Year Should Not be Emprty';

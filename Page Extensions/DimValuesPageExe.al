@@ -6,35 +6,35 @@ pageextension 50103 "Dim Values PageExe" extends "Dimension Values"
         {
             field("Shortcut Dimension 2 Code"; Rec."Shortcut Dimension 2 Code")
             {
-                Editable = Editable2;
+                Editable = EditableField;
                 TableRelation = "Dimension Value".Code where("Global Dimension No." = const(2));
             }
             field("Shortcut Dimension 3 Code"; Rec."Shortcut Dimension 3 Code")
             {
-                Editable = Editable2;
+                Editable = EditableField;
                 TableRelation = "Dimension Value".Code where("Global Dimension No." = const(3));
             }
             field("Percentage One"; Rec."Percentage One")
             {
-                Editable = Editable2;
+                Editable = EditableField;
             }
             field("Shortcut Dimension 3 Two"; Rec."Shortcut Dimension 3 Two")
             {
-                Editable = Editable2;
+                Editable = EditableField;
                 TableRelation = "Dimension Value".Code where("Global Dimension No." = const(3));
             }
             field("Percentage Two"; Rec."Percentage Two")
             {
-                Editable = Editable2;
+                Editable = EditableField;
             }
             field("Shortcut Dimension 3 Three"; Rec."Shortcut Dimension 3 Three")
             {
-                Editable = Editable2;
+                Editable = EditableField;
                 TableRelation = "Dimension Value".Code where("Global Dimension No." = const(3));
             }
             field("Percentage Three"; Rec."Percentage Three")
             {
-                Editable = Editable2;
+                Editable = EditableField;
             }
         }
         addafter(Blocked)
@@ -55,11 +55,13 @@ pageextension 50103 "Dim Values PageExe" extends "Dimension Values"
     }
     trigger OnAfterGetCurrRecord()
     begin
-        Editable2 := false;
+        EditableField := false;
         if (Rec."Dimension Code" = 'EMPLOYEE') then
-            Editable2 := true;
+            EditableField := true;
     end;
 
     var
-        Editable2: Boolean;
+        EditableField: Boolean;
+        genledgsetup: Record "General Ledger Setup";
+        genledgset: Page "General Ledger Setup";
 }

@@ -73,7 +73,7 @@ page 50104 "Distribution Rule Filter"
             }
             part(DistributionProject; "Distribution Project")
             {
-                Caption = 'Prject Line';
+                Caption = 'Project Line';
                 Editable = true;
                 Enabled = true;
                 UpdatePropagation = Both;

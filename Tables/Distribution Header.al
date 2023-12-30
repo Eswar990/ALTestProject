@@ -7,12 +7,7 @@ table 50100 "Distribution Header"
     {
         field(1; "User ID"; Code[50])
         {
-            trigger OnValidate()
-            var
-                myInt: Integer;
-            begin
 
-            end;
         }
         field(2; year; Code[20])
         {
@@ -22,14 +17,14 @@ table 50100 "Distribution Header"
         {
 
         }
-        field(4; "Previous Year"; Code[20])
-        {
+        // field(4; "Previous Year"; Code[20])
+        // {
 
-        }
-        field(5; "Previous Month"; Code[20])
-        {
+        // }
+        // field(5; "Previous Month"; Code[20])
+        // {
 
-        }
+        // }
         field(6; "No. Series"; Code[20])
         {
             Caption = 'No. Series';
@@ -53,9 +48,10 @@ table 50100 "Distribution Header"
         end;
     end;
 
-
     var
-        SalesSetup: Record "Sales & Receivables Setup";
         NoSeriesMgt: Codeunit NoSeriesManagement;
-        SelectNoSeriesAllowed: Boolean;
+        Incrheader: Record 443;
+        IncrLines: Record 413;
+        Incheadpage: Page 653;
+        IncLinespage: Page 622;
 }

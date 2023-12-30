@@ -100,13 +100,30 @@ page 50103 "Distribution Entries"
         }
     }
 
+    trigger OnOpenPage()
+    var
+        AccountCategory: Enum "G/L Account Category";
+    begin
+        Rec.SetCurrentKey("Entry No.");
+        Rec.Ascending(false);
+        Rec.SetRange(Rec."Account Category", AccountCategory::Income);
+        Rec.FindSet(false);
+    end;
 
     var
         AccountCategoryinsertedGLentry: Codeunit AccountCategoryinsertedGLentry;
         Distribution: Record "Distribution Rule Filter";
+        GLEntry: Record "G/L Entry";
+        DocumentEntry: Record "Document Entry";
+        Navigate: Page Navigate;
         Distributions: Page "Distribution Rule Filter";
         generalledgerenr: Page "General Ledger Entries";
-        GLEntry: Record "G/L Entry";
+        SalesPage: Page "Sales Order";
+        SalesQuote: Page "Sales Quote";
+        Codeunit: Codeunit 80;
+        Codeunit2: Codeunit 90;
+        Codeunit3: Codeunit 12;
+        table: Record 81;
         TooManyGLEntriesSelectedErr: Label 'You have selected too many G/L entries. Split the change to select fewer entries, or go to the Dimension Correction page and use filters to select the entries.';
 
 }
