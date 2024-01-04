@@ -52,6 +52,10 @@ table 50107 "Distribution Line Copy"
         {
             Caption = 'User ID';
         }
+        field(13; "Sorting Value"; Code[10])
+        {
+            Caption = 'Sorting Value';
+        }
     }
 
     keys

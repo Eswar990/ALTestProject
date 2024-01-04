@@ -41,14 +41,13 @@ page 50102 "Distribution Subform"
                         DistributionHeader.FindFirst();
                         if (Rec.Month <> DistributionHeader.Month) then
                             Error(HeaderAndLineMonthMustBeSame);
+                        ReferenceData.Get(Type::Month, Rec.Month);
+                        if (ReferenceData.Code = Rec.Month) then
+                            Rec."Sorting Value" := ReferenceData."Sorting Value";
                     end;
                 }
                 field("Shortcut Dimension 1 Code"; Rec."Shortcut Dimension 1 Code")
                 {
-                    // trigger OnValidate()
-                    // begin
-                    //     SetFilterProcedure(Rec."Shortcut Dimension 1 Code")
-                    // end;
                 }
                 field("Shortcut Dimension 2 Code"; Rec."Shortcut Dimension 2 Code")
                 {
@@ -98,7 +97,6 @@ page 50102 "Distribution Subform"
                 begin
                     ReadExcelSheet();
                     ImportExcelData();
-                    // MyProcedure();
                 end;
             }
 
@@ -149,12 +147,15 @@ page 50102 "Distribution Subform"
             MaxRow := TempExcelBuffer."Row No.";
 
         for RowNo := 2 to MaxRow do begin
-            LineNo := LineNo + 1000;
+            LineNo := LineNo + 10;
 
             Distributionline.Init();
             Distributionline."Line No." := LineNo;
             Evaluate(Distributionline.Year, GetValueAtCell(RowNo, 1));
             Evaluate(Distributionline.Month, GetValueAtCell(RowNo, 2));
+            If (ReferenceData.Get(Type::Month, DistributionHeader.Month) = true) then
+                Distributionline."Sorting Value" := ReferenceData."Sorting Value";
+
             Evaluate(Distributionline."Shortcut Dimension 1 Code", GetValueAtCell(RowNo, 3));
             Evaluate(Distributionline."Shortcut Dimension 2 Code", GetValueAtCell(RowNo, 4));
             Evaluate(Distributionline."Shortcut Dimension 3 Code", GetValueAtCell(RowNo, 5));
@@ -163,15 +164,16 @@ page 50102 "Distribution Subform"
             Distributionline."Percentage Two" := GetDecimal(RowNo, 8);
             Evaluate(Distributionline."Shortcut Dimension 3 Three", GetValueAtCell(RowNo, 9));
             Distributionline."Percentage Three" := GetDecimal(RowNo, 10);
-            DistributionHeader.SetRange(year, Distributionline.Year);
-            DistributionHeader.SetRange(Month, Distributionline.Month);
-            DistributionHeader.FindLast();
+            // DistributionHeader.SetRange(year, Distributionline.Year);
+            // DistributionHeader.SetRange(Month, Distributionline.Month);
+            // DistributionHeader.FindLast();
             Distributionline.Validate("User ID", DistributionHeader."User ID");
             if (DistributionHeader.year <> Distributionline.Year) then
                 Error(YearMustBeSame)
             else
                 if (DistributionHeader.Month <> Distributionline.Month) then
                     Error(MonthMustBeSame);
+
             Distributionline.Insert();
         end;
         Message(ExcelImportSucces);
@@ -197,38 +199,9 @@ page 50102 "Distribution Subform"
         end;
     end;
 
-
-    procedure SetFilterProcedure(EmployeeCode: Code[20])
     var
-        Count: Integer;
-        EmployeeCodeIsExisted: Label ' %1 Employee Code Is Existed';
-    begin
-        Rec.SetRange("Shortcut Dimension 1 Code", EmployeeCode);
-        if (Rec.FindSet(false) = true) then
-            repeat
-                Count += 1;
-                if (Count > 0) then
-                    Error(EmployeeCodeIsExisted, EmployeeCode);
-            until Rec.Next() = 0
-    end;
-
-    trigger OnClosePage()
-    var
-        DeleteDistributionData: Codeunit DeleteDistributionData;
-    begin
-        // DeleteDistributionData.DeleteDistributionLineData();
-    end;
-
-    trigger OnQueryClosePage(CloseAction: Action): Boolean
-    var
-        DeleteDistributionData: Codeunit DeleteDistributionData;
-    begin
-        // if ((Rec.Year = '') or (Rec.Month = '') or (Rec."Shortcut Dimension 1 Code" = '')) then
-        //     exit;
-        // DeleteDistributionData.CopyFromDistributionLinetwo(Rec.Year, Rec.Month, Rec."Shortcut Dimension 1 Code", Rec."User ID");
-    end;
-
-    var
+        ReferenceData: Record "Reference Data";
+        Type: Option Year,Month;
         FileName: Text[100];
         SheetName: text[100];
         TempExcelBuffer: Record "Excel Buffer" temporary;

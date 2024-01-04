@@ -118,12 +118,6 @@ page 50103 "Distribution Entries"
         Navigate: Page Navigate;
         Distributions: Page "Distribution Rule Filter";
         generalledgerenr: Page "General Ledger Entries";
-        SalesPage: Page "Sales Order";
-        SalesQuote: Page "Sales Quote";
-        Codeunit: Codeunit 80;
-        Codeunit2: Codeunit 90;
-        Codeunit3: Codeunit 12;
-        table: Record 81;
         TooManyGLEntriesSelectedErr: Label 'You have selected too many G/L entries. Split the change to select fewer entries, or go to the Dimension Correction page and use filters to select the entries.';
 
 }

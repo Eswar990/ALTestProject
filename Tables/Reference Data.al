@@ -12,7 +12,7 @@ table 50101 "Reference Data"
             Caption = 'Type';
             OptionMembers = Year,Month;
         }
-        field(2; "Code"; code[20])
+        field(2; "Code"; code[4])
         {
             Caption = 'Code';
         }

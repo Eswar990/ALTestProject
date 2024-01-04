@@ -5,8 +5,7 @@ page 50108 "Distribution Line Copy"
     PageType = List;
     SourceTable = "Distribution Line Copy";
     UsageCategory = Tasks;
-    // Editable = false;
-
+    Editable = false;
     layout
     {
         area(content)
@@ -45,10 +44,13 @@ page 50108 "Distribution Line Copy"
                 }
                 field("User ID"; Rec."User ID")
                 {
-
                 }
             }
         }
     }
-
+    trigger OnOpenPage()
+    begin
+        Rec.SetCurrentKey("Sorting Value");
+        Rec.SetAscending("Sorting Value", true);
+    end;
 }

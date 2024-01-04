@@ -1,9 +1,6 @@
 page 50104 "Distribution Rule Filter"
 {
     Caption = 'Distribution Rule Filter';
-    // DeleteAllowed = false;
-    // InsertAllowed = false;
-    // LinksAllowed = false;
     Editable = true;
     PageType = Card;
     SourceTable = "Distribution Rule Filter";

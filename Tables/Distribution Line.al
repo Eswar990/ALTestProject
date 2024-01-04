@@ -62,6 +62,10 @@ table 50102 "Distribution Line"
         {
             Caption = 'User ID';
         }
+        field(13; "Sorting Value"; Code[10])
+        {
+            Caption = 'Sorting Value';
+        }
 
     }
     keys
@@ -71,8 +75,4 @@ table 50102 "Distribution Line"
             Clustered = true;
         }
     }
-    var
-        sO: Record "Sales Header";
-        SL: Record "Sales Line";
-        Salesorder: Page "Sales Order";
 }

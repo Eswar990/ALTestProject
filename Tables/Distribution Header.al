@@ -17,14 +17,6 @@ table 50100 "Distribution Header"
         {
 
         }
-        // field(4; "Previous Year"; Code[20])
-        // {
-
-        // }
-        // field(5; "Previous Month"; Code[20])
-        // {
-
-        // }
         field(6; "No. Series"; Code[20])
         {
             Caption = 'No. Series';
@@ -50,8 +42,4 @@ table 50100 "Distribution Header"
 
     var
         NoSeriesMgt: Codeunit NoSeriesManagement;
-        Incrheader: Record 443;
-        IncrLines: Record 413;
-        Incheadpage: Page 653;
-        IncLinespage: Page 622;
 }
